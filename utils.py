@@ -27,7 +27,7 @@ def get_preview(text: str, n_char=250):
 
 
 @st.experimental_memo()
-def get_gpt3_response(prompt: str, max_tokens=256, **kwargs):
+def get_gpt3_response(prompt: str, max_tokens=512, **kwargs):
     openai.api_key = os.getenv("OPENAI_API_KEY")
     response = openai.Completion.create(
         prompt=prompt,
@@ -141,3 +141,16 @@ def get_team_checklist(team: str):
     """
     with open(f"team_checklists/{team.lower()}.md", "r") as f:
         return f.read()
+
+
+def create_team_descriptions():
+    """
+    Reads individual files from the team_descriptions/ folder and creates a text blob of the form
+    1. **Team Name:** Team Description
+    etc.
+    """
+    team_descriptions = ""
+    for i, team in enumerate(os.listdir("team_descriptions"), 1):
+        with open(f"team_descriptions/{team}", "r") as f:
+            team_descriptions += f"{i}. **{team[:-3].title()}:** {f.read()}\n"
+    return team_descriptions
